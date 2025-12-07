@@ -11,13 +11,16 @@
       prompt: "enter bucket name"
       default: "default"
       private: no
-
+    - name: account_id
+      prompt: "enter account_id"
+      default: "default"
+      private: no
   tasks:
     - name: Get Grid Authorization Token
       uri:
         url: "https://192.168.4.230:443/api/v3/authorize"
         method: POST
-        body: '{"accountId": "06959856192431261086", "username": "root", "password": "br@@mspun111"}'
+        body: '{"accountId": "{{ account_id }}", "username": "root", "password": "br@@mspun111"}'
         body_format: json
         validate_certs: false
         status_code: [200]
