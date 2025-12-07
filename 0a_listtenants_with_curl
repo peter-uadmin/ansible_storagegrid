@@ -1,14 +1,16 @@
 #!/usr/bin/bash
+#token is hard coded!
+#01-get-token generates it.
 clear
 echo 
 echo "raw data"
 echo
 echo ========
-curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer 1a2dd832-4199-4a66-b329-1c1b8d808ff4" -k  
+curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer 628380f5-2bd8-4e80-9e35-582bfc7fe427" -k  
 sleep 3
 echo ========
 echo 
 echo "using jq"
 echo 
-curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer 1a2dd832-4199-4a66-b329-1c1b8d808ff4" -k  |jq -r '.data[] | "\(.name) \(.id)"' 
+curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer 628380f5-2bd8-4e80-9e35-582bfc7fe427" -k  |jq -r '.data[] | "\(.name) \(.id)"' 
 echo ========

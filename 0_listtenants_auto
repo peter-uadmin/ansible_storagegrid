@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+echo "step 1. get token using curl. We need to enter username and password in curl-request
+
+export token=`curl -s -k -X POST "https://192.168.4.230:443/api/v3/authorize" \
+-H "accept: application/json" \
+-H "Content-Type: application/json" \
+-d '{"username": "root", "password": "br@@mspun111"}'|jq -r '.data'`
+echo =======
+
+echo 
+echo "using $token to get a list of tenants and account-ids"
+echo -n "press enter : "
+read
+curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer $token" -k  |jq -r 
