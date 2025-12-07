@@ -13,8 +13,8 @@
         method: POST
         body_format: json
         body:
-          username: "{{ storagegrid_username }}"
-          password: "{{ storagegrid_password }}"
+          username: "{{ grid_username }}"
+          password: "{{ grid_password }}"
         status_code: 200
         validate_certs: false
       register: token_response

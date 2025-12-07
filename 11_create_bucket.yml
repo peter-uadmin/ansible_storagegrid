@@ -11,18 +11,40 @@
       prompt: "enter bucket name"
       default: "default"
       private: no
+    - name: tenant_id
+      prompt: "enter tenant id"
+      default: "default"
+      private: no
+    - name: tenant_username
+      prompt: "enter tenant user"
+      default: "default"
+      private: no
+    - name: tenant_password
+      prompt: "enter tenant password" 
+      default: "default"
+      private: no
+
+  vars_files:
+    global_vars.yml
 
   tasks:
-    - name: Get Grid Authorization Token
+    - name: Get Tenant Authorization Token
       uri:
-        url: "https://192.168.4.230:443/api/v3/authorize"
+        url: "{{ grid_endpoint }}/api/v3/authorize"
         method: POST
-        body: "{{ lookup('file', 'ok_sgrid_auth_B.json') }}"
-        #body: "06959856192431261086"
+        body: '{"accountId": "{{ tenant_id }}", 
+                "username": "{{ tenant_username }}", 
+                "password": "{{ tenant_password }}"}'
         body_format: json
         validate_certs: false
-        status_code: [200]  # Changed from 'status' to 'status_code'
+        status_code: [200]
       register: auth
+#
+#the authtoken can be processes as auth.json.data (variable)
+#
+    - name: Display Tenant Auth Token
+      ansible.builtin.debug:
+        msg: "Tenant Auth Token: {{ auth.json.data }}"
 
     - name: Create S3 Bucket
       netapp.storagegrid.na_sg_org_container:

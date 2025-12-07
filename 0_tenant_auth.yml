@@ -9,7 +9,7 @@
 #define endpoint, user, pass and tenantid
 #
   vars:
-    grid_api_url: "https://192.168.4.230:443"
+    grid_endpoint: "https://192.168.4.230:443"
     tenant_username: "root"  
     tenant_password: "br@@mspun111"  
   vars_prompt:
@@ -23,7 +23,7 @@
   tasks:
     - name: Get Tenant Authorization Token
       uri:
-        url: "{{ grid_api_url }}/api/v3/authorize"
+        url: "{{ grid_endpoint }}/api/v3/authorize"
         method: POST
         body: '{"accountId": "{{ tenant_id }}", 
                "username": "{{ tenant_username }}", 
@@ -38,4 +38,3 @@
     - name: Display Tenant Auth Token
       ansible.builtin.debug:
         msg: "Tenant Auth Token: {{ auth.json.data }}"
-

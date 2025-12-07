@@ -10,7 +10,7 @@
   tasks:
     - name: Get list of tenants from StorageGRID
       uri:
-        url: "https://{{ admin_node }}/api/v3/grid/accounts"
+        url: "{{ grid_endpoint }}/api/v3/grid/accounts"
         method: GET
         headers:
           Authorization: "Bearer {{ bearer_token }}"

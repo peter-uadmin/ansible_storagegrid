@@ -2,7 +2,7 @@
 ---
 - name: Get Grid  Authorization Token
   uri:
-    url: "https://{{ admin_node }}/api/v3/authorize"
+    url: "{{ grid_endpoint }}/api/v3/authorize"
     method: POST
     body_format: json
     body:
