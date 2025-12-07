@@ -1,4 +1,4 @@
-#common way to retrieve a tenants session authtoken
+#all hardcoded. change this
 ---
 - name: Get Tenant Auth Token
   hosts: localhost
