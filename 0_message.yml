@@ -1,0 +1,8 @@
+---
+- name: Welcome
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: print messsage
+      ansible.builtin.debug:
+        msg: "Welcome to this lab"

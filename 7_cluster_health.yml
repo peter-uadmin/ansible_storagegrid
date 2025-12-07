@@ -1,0 +1,32 @@
+---
+- name: Collect StorageGRID cluster health
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - netapp.storagegrid
+  vars:
+  vars_files:
+    global_vars.yml
+  roles:
+    - grid_auth
+  tasks:
+    - name: Gather cluster health snapshot
+      netapp.storagegrid.na_sg_grid_info:
+        api_url: "https://192.168.4.230:443"
+        auth_token: "{{ bearer_token }}"
+        validate_certs: false
+        gather_subset:
+          - grid/accounts
+          - grid/ilm-policies
+          - grid/ilm-rules
+      register: cluster_info
+
+    - name: Dump collected facts
+      ansible.builtin.debug:
+        msg: "{{ cluster_info }}"
+
+#    - name: Log out
+#      netapp.storagegrid.storagegrid_logout:
+#        api_url: "https://192.168.4.230:443"
+#        auth_token: "{{ tenant_auth.json.data }}"

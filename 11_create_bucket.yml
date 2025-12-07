@@ -1,0 +1,34 @@
+#this playbook uses the sgrid_auth_B.json file to get the account id
+#of the tenant. So you will need to edit this file for the right id.
+---
+- name: Create StorageGRID Bucket
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - netapp.storagegrid
+  vars_prompt:
+    - name: bucket_name
+      prompt: "enter bucket name"
+      default: "default"
+      private: no
+
+  tasks:
+    - name: Get Grid Authorization Token
+      uri:
+        url: "https://192.168.4.230:443/api/v3/authorize"
+        method: POST
+        body: "{{ lookup('file', 'ok_sgrid_auth_B.json') }}"
+        #body: "06959856192431261086"
+        body_format: json
+        validate_certs: false
+        status_code: [200]  # Changed from 'status' to 'status_code'
+      register: auth
+
+    - name: Create S3 Bucket
+      netapp.storagegrid.na_sg_org_container:
+        api_url: "https://192.168.4.230:443"
+        auth_token: "{{ auth.json.data }}"
+        validate_certs: false
+        state: present
+        name: "{{ bucket_name }}"
+        region: us-east-1

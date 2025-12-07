@@ -1,0 +1,74 @@
+---
+- name: Identify Tenant Behind Endpoint
+  hosts: localhost
+  gather_facts: no
+  vars:
+  vars_files:
+    global_vars.yml
+
+  tasks:
+    # Step 1: Get Admin Authentication Token
+    - name: Get Admin Authentication Token
+      uri:
+        url: "{{ grid_endpoint }}/api/v3/authorize"
+        method: POST
+        body: '{"username": "{{ grid_username }}", "password": "{{ grid_password }}"}'
+        body_format: json
+        validate_certs: false
+        return_content: true
+        status_code: [200]
+        timeout: 60
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+      register: tenant_auth
+
+    - name: Debug authentication response
+      debug:
+        msg: "Authentication token: {{ tenant_auth.json.data }}"
+      when: tenant_auth is succeeded
+
+    # Step 2: Get List of All Tenants
+    - name: Get List of All Tenants
+      uri:
+        url: "{{ grid_endpoint }}/api/v3/grid/accounts"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ tenant_auth.json.data }}"
+          Accept: "application/json"
+        validate_certs: false
+        return_content: true
+        status_code: [200]
+        timeout: 60
+      register: tenant_list
+
+    - name: Debug authentication response
+      debug:
+        msg: "Response content: {{ tenant_auth.json.data }}"
+      when: tenant_auth is succeeded
+    - name: Find Tenant with Matching Endpoint
+      uri:
+        url: "{{ grid_endpoint }}/api/v3/tenants/{{ item.id }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ tenant_auth.json.data }}"
+          Accept: "application/json"
+        validate_certs: false
+        return_content: true
+        status_code: [200]
+        timeout: 60
+        register: tenant_details
+      loop: "{{ tenant_list.json.data }}"
+      when: item.endpoints is defined and item.endpoints.s3 is defined
+      ignore_errors: true
+      failed_when: false
+    
+    - name: Debug All Tenants (for troubleshooting)
+      debug:
+        msg: "Tenant {{ item.id }} endpoints: {{ item.endpoints.s3[0] if item.endpoints is defined and item.endpoints.s3 is defined else 'No S3 endpoint' }}"
+      loop: "{{ tenant_list.json.data }}"
+    
+    - name: Display Matching Tenant
+      debug:
+        msg: "Found tenant with matching endpoint: {{ tenant_details.json.data.name }}"
+      when: tenant_details is defined and tenant_details is succeeded and tenant_details.json.data.endpoints.s3[0] == tenant_endpoint

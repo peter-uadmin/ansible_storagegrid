@@ -1,0 +1,38 @@
+#use an encrypted vars_file for the user password grid_endpoint
+---
+- name: List StorageGRID Nodes
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - netapp.storagegrid
+  vars:
+    sgrid_endpoint: "{{ grid_endpoint }}"
+  vars_files:
+    vault.yml
+
+  tasks:
+    - name: Get Grid Authorization Token
+      uri:
+        url: "https://192.168.4.230:443/api/v3/authorize"
+        method: POST
+        body: {
+          "username": "{{ grid_user }}",
+          "password": "{{ grid_password }}",
+          "cookie": false,
+          "csrfToken": false
+        }
+        body_format: json
+        validate_certs: false
+      register: auth
+
+    - name: Get grid info
+      na_sg_grid_info:
+        api_url: "{{ sgrid_endpoint }}"
+        auth_token: "{{ auth.json.data }}"
+        validate_certs: false
+      register: grid_info
+
+    - name: Show all grid info keys
+      debug:
+        var: grid_info
+

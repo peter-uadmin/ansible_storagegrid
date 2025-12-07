@@ -1,0 +1,1 @@
+curl -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer 1a2dd832-4199-4a66-b329-1c1b8d808ff4" -k  |jq -r '.data[] | "\(.name) \(.id)"'

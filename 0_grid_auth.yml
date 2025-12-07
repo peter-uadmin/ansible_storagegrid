@@ -1,0 +1,33 @@
+#common way to retrieve a session authtoken
+---
+- name: Get Grid Admin Auth Token
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - netapp.storagegrid
+#
+#define endpoint, user and pass
+#
+  vars:
+    grid_api_url: "https://192.168.4.230:443"
+    admin_username: "root"
+    admin_password: "br@@mspun111"
+#
+#connect to endpoint ans use /api/v3/authorize
+#
+  tasks:
+    - name: Get Grid Authorization Token
+      uri:
+        url: "{{ grid_api_url }}/api/v3/authorize"
+        method: POST
+        body: '{"username": "{{ admin_username }}", "password": "{{ admin_password }}"}'
+        body_format: json
+        validate_certs: false
+        status_code: [200]
+      register: auth
+#
+#the authtoken can be processes as auth.json.data (variable)
+#
+    - name: Display Grid Admin Auth Token
+      ansible.builtin.debug:
+        msg: "Grid Admin Auth Token: {{ auth.json.data }}"

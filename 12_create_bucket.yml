@@ -1,0 +1,33 @@
+#this playbook uses hardcoded tenant data for authorization
+#of the tenant. 
+---
+- name: Create StorageGRID Bucket
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - netapp.storagegrid
+  vars_prompt:
+    - name: bucket_name
+      prompt: "enter bucket name"
+      default: "default"
+      private: no
+
+  tasks:
+    - name: Get Grid Authorization Token
+      uri:
+        url: "https://192.168.4.230:443/api/v3/authorize"
+        method: POST
+        body: '{"accountId": "06959856192431261086", "username": "root", "password": "br@@mspun111"}'
+        body_format: json
+        validate_certs: false
+        status_code: [200]
+      register: auth
+
+    - name: Create S3 Bucket
+      netapp.storagegrid.na_sg_org_container:
+        api_url: "https://192.168.4.230:443"
+        auth_token: "{{ auth.json.data }}"
+        validate_certs: false
+        state: present
+        name: "{{ bucket_name }}"
+        region: us-east-1

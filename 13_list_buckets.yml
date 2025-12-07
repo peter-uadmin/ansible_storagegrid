@@ -1,0 +1,37 @@
+#this playbook uses hardcoded tenant data for authorization
+#of the tenant. 
+---
+- name: List StorageGRID Tenant Buckets
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - netapp.storagegrid
+
+  tasks:
+    - name: Get Grid Authorization Token
+      uri:
+        url: "https://192.168.4.230:443/api/v3/authorize"
+        method: POST
+        body: '{"accountId": "06959856192431261086", "username": "admin", "password": "br@@mspun111"}'
+        body_format: json
+        validate_certs: false
+        status_code: [200]
+      register: auth
+
+    - name: List All Buckets for Tenant
+      netapp.storagegrid.na_sg_org_bucket:
+        api_url: "https://192.168.4.230:443"
+        auth_token: "{{ auth.json.data }}"
+        name: "dummy"
+        state: list
+        validate_certs: false
+      register: bucket_info
+
+    - name: Debug raw output
+      ansible.builtin.debug:
+        var: bucket_info
+
+    - name: Display Bucket Names
+      ansible.builtin.debug:
+        var: bucket_info.buckets
+        #msg: "{{ bucket_info.buckets | map(attribute='name') | list }}"
