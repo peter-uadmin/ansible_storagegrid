@@ -25,7 +25,9 @@
       uri:
         url: "{{ grid_api_url }}/api/v3/authorize"
         method: POST
-        body: '{"accountId": "{{ tenant_id }}", "username": "{{ tenant_username }}", "password": "{{ tenant_password }}"}'
+        body: '{"accountId": "{{ tenant_id }}", 
+               "username": "{{ tenant_username }}", 
+                "password": "{{ tenant_password }}"}'
         body_format: json
         validate_certs: false
         status_code: [200]
