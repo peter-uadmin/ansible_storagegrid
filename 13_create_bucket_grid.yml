@@ -1,5 +1,3 @@
-#this playbook allows a tenant to create a bucket
-#it prompts for the tenant-id, username, password, bucketname
 #it does not use a role to get the authtoken
 ---
 - name: Create StorageGRID Bucket
