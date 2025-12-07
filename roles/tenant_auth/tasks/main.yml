@@ -6,11 +6,12 @@
     method: POST
     body_format: json
     body:
+      accountId: "{{ tenant_id }}"
       username: "{{ grid_username }}"
       password: "{{ grid_password }}"
     status_code: 200
     validate_certs: false
-  register: auth
+  register: auth 
 
 - name: Set bearer token fact
   set_fact:
