@@ -1,0 +1,26 @@
+---
+- name: Generate S3 Access Keys for Tenant User
+  hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.storagegrid
+  vars:
+    grid_endpoint: "192.168.4.230:443"
+    unique_user_name: "admin"  # Replace with the actual tenant user name
+    tenant_id: "06720005734697258898"
+  roles:
+    - tenant_auth
+  tasks:
+    - name: Generate S3 Access Keys for Tenant User
+      netapp.storagegrid.na_sg_org_user_s3_key:
+        api_url: "https://{{ grid_endpoint }}"
+        auth_token: "{{ bearer_token }}"
+        unique_user_name: admin 
+        state: present
+        validate_certs: false
+      register: access_keys
+
+    - name: Display generated access keys
+      debug:
+        var: access_keys
+
