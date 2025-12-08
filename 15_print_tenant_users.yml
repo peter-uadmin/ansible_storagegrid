@@ -8,23 +8,28 @@
 #
 #define endpoint, user, pass and tenantid
 #
-  vars:
-    grid_api_url: "https://192.168.4.230:443"
-    tenant_id: "06959856192431261086"
-    tenant_username: "root"  
-    tenant_password: "br@@mspun111"  
   vars_prompt:
     - name: tenant_id 
       prompt: "enter accountid"
       default: "default"
       private: no
+    - name: tenant_username 
+      prompt: "enter username"
+      default: "default"
+      private: no
+    - name: tenant_password
+      prompt: "enter password"
+      default: "default"
+      private: yes
+  vars_files:
+    - global_vars.yml
 #
 #connect to endpoint ans use /api/v3/authorize
 #    
   tasks:
     - name: Get Tenant Authorization Token
       uri:
-        url: "{{ grid_api_url }}/api/v3/authorize"
+        url: "{{ grid_endpoint }}/api/v3/authorize"
         method: POST
         body: '{"accountId": "{{ tenant_id }}", "username": "{{ tenant_username }}", "password": "{{ tenant_password }}"}'
         body_format: json
@@ -36,7 +41,7 @@
 #
     - name: List StorageGRID Users
       uri:
-        url: "{{ grid_api_url }}/api/v3/org/users"
+        url: "{{ grid_endpoint }}/api/v3/org/users"
         method: GET
         headers:
           Authorization: "Bearer {{ auth.json.data }}"
@@ -45,5 +50,9 @@
       register: sg_users
 
     - name: Print Users
-      ansible.builtin.debug:
-        var: sg_users.json.data 
+      debug:
+        msg: "UserName {{ item.fullName }} (ID: {{ item.id }})"
+      loop: "{{ sg_users.json.data }}" 
+      loop_control:
+        label: "{{ item.fullName }}"
+#        var: sg_users.json.data 

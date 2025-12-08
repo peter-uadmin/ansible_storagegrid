@@ -9,7 +9,7 @@
   tasks:
     - name: Get bearer token from StorageGRID
       uri:
-        url: "https://{{ admin_node_ip }}/api/v3/authorize"
+        url: "{{ grid_endpoint }}/api/v3/authorize"
         method: POST
         body_format: json
         body:
@@ -26,7 +26,7 @@
 
     - name: Get list of tenants from StorageGRID
       uri:
-        url: "https://{{ admin_node_ip }}/api/v3/grid/accounts"
+        url: "{{ grid_endpoint }}/api/v3/grid/accounts"
         method: GET
         headers:
           Authorization: "Bearer {{ bearer_token }}"
