@@ -18,7 +18,15 @@
         validate_certs: false
       register: tenants
 
-    - name: Display tenants JSON
+ #   - name: Display tenants JSON
+ #     debug:
+ #       var: tenants.json
+
+    - name: Display each tenant's name and id
       debug:
-        var: tenants.json
+        msg: "Tenant {{ item.name }} (ID: {{ item.id }})"
+      loop: "{{ tenants.json.data }}"
+      loop_control: #loop_control prints only the two items in msg:
+        label: "{{ item.name }}"
+
 
