@@ -1,0 +1,79 @@
+#pypi.org/project/netapp-ontap/
+
+---
+dnf update -y
+dnf install -y python3.11 python3.11-pip
+python3.11 -m venv ansible_venv
+source ansible_venv/bin/activate
+
+(to stop: "deactivate")
+
+
+pip install ansible requests requests-toolbelt marshmallow
+pip install netapp-ontap
+pip install netapp-lib
+
+======#done by pip above...#
+sudo /home/rocky/ansible_venv/bin/pip install ansible
+ansible-galaxy collection install netapp.ontap
+ansible-galaxy collection install netapp.storagegrid
+=======
+
+ansible-galaxy collection install amazon.aws #this is for sgrid 
+pip install boto3 botocore #this is for sgrid 
+
+dnf install -y git
+dnf install python3.12-pip-22.3.1-5.el9.noarch
+pip install oslo_log
+
+====
+#when using venv
+chmod -R +x /root/ansible_venv/lib/python3.11/site-packages/ansible/collections
+
+#when not using venv
+chmod -R +x /root/.ansible/collections
+====
+#
+#get the workshop when needed
+git clone https://github.com/NetApp-Learning-Services/STRSW-ILT-RSTAN ansible-workshop
+
+#set the config variable
+echo "ANSIBLE_CONFIG=/root/ansible-workshop/ansible.cfg" >> ~/.bashrc
+source ~/.bashrc
+
+#create an alias for ansible-playbook
+which ansible-playbook
+/root/ansible_venv/bin/ansible-playbook
+
+echo "alias play=/root/ansible_venv/bin/ansible-playbook" >> ~/.bashrc
+source ~/.bashrc
+
+#hosts
+[ontap]
+192.168.4.202 shortname=cl2
+192.168.4.204 shortname=cl3
+[servers]
+192.168.4.193 shortname=rocky-93
+[nginx]
+192.168.4.193
+rocky-93 ansible-host=192.168.4.193
+
+#ansible.cfg
+[defaults]
+inventory        = ~/ansible-workshop/hosts
+log_path         = ~/ansible-workshop/ansible.log
+display_skipped_hosts = no
+
+#check inventory
+ansible ontap --list-hosts
+ansible servers --list-hosts
+ansible nginx --list-hosts
+ansible rocky-93 --list-hosts
+
+#hostkey checking....
+#dnf install -y sshpass
+
+#run ssh-keygen on rocky-93 and store public-key in known-hosts
+ansible rocky-93 -m ping -u root 
+ansible-workshop]# ansible rocky-93 -m yum -a 'name=python3 state=latest' -u root
+
