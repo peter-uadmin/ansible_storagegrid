@@ -1,16 +1,21 @@
 #!/usr/bin/bash
-#token is hard coded!
 #01-get-token generates it.
+token=$(curl -s -k -X POST "https://192.168.4.230:443/api/v3/authorize" \
+-H "accept: application/json" \
+-H "Content-Type: application/json" \
+-d '{"username": "root", "password": "br@@mspun111"}'|jq -r '.data'
+)
+#
 clear
 echo 
 echo "raw data"
 echo
 echo ========
-curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer 628380f5-2bd8-4e80-9e35-582bfc7fe427" -k  
-sleep 3
+curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer $token" -k  
+sleep 1
 echo ========
 echo 
-echo "using jq"
+echo using jq to filter out name and id
 echo 
-curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer 628380f5-2bd8-4e80-9e35-582bfc7fe427" -k  |jq -r '.data[] | "\(.name) \(.id)"' 
+curl -s -X GET "https://192.168.4.230:443/api/v3/grid/accounts" -H "accept: application/json"  -H "Authorization: Bearer $token" -k  |jq -r '.data[] | "\(.name) \(.id)"' 
 echo ========
