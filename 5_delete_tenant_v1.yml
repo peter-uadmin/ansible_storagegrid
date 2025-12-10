@@ -22,7 +22,6 @@
         api_url: "https://192.168.4.230:443"
         auth_token: "{{ bearer_token }}"
         validate_certs: false
-        validate_certs: false
         state: absent
         name: "{{ tenant_name }}"
         protocol: "s3"
