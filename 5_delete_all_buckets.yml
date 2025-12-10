@@ -1,3 +1,4 @@
+---
 - name: Delete All Tenant Buckets
   hosts: localhost
   gather_facts: no
@@ -6,9 +7,9 @@
 
   vars:
     api_url: "https://192.168.4.230:443"
-    tenant_id: "06959856192431261086"
+    tenant_id: 06720005734697258898 
     bucket_names:
-      - mybucket1000
+      - aaaak 
   tasks:
     - name: Get Grid Authorization Token
       uri:
