@@ -19,7 +19,7 @@
   tasks:
     - name: delete
       netapp.storagegrid.na_sg_grid_account:
-        api_url: "https://192.168.4.230:443"
+        api_url: "{{ grid_endpoint }}"
         auth_token: "{{ bearer_token }}"
         validate_certs: false
         state: absent
