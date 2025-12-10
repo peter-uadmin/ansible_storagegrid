@@ -1,0 +1,31 @@
+---
+- name: Tenant Create Bucket
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - netapp.storagegrid
+  vars_prompt:
+    - name: bucket_name
+      prompt: "enter bucket name"
+      default: "default"
+      private: no
+    - name: account_id
+      prompt: "enter account_id"
+      default: "06959856192431261086"
+      private: no 
+  roles:
+    - tenant_auth
+  tasks:
+    - name: Create S3 Bucket as Tenant
+      netapp.storagegrid.na_sg_org_container:
+        api_url: "https://192.168.4.230:443"
+        auth_token: "{{ auth.json.data }}"
+        validate_certs: false
+        state: present
+        name: "{{ bucket_name }}"
+        region: us-east-1
+
+    - name: Display Bucket Creation Result
+      ansible.builtin.debug:
+        var: bucket_result
+

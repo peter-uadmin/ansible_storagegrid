@@ -1,0 +1,33 @@
+#This role sets the bearer_token for grid_authorization
+---
+- name: get tenant token
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - netapp.storagegrid
+
+  vars_files:
+      global_vars.yml
+
+  tasks:
+    - name: Get Grid  Authorization Token
+      uri:
+        url: "{{ grid_endpoint }}/api/v3/authorize"
+        method: POST
+        body_format: json
+        body:
+          accountId: 06720005734697258898  
+          username: financeadmin 
+          password: br@@mspun111 
+        status_code: 200
+        validate_certs: false
+      register: auth 
+
+    - name: Set bearer token fact
+      set_fact:
+        bearer_token: "{{ auth.json.data }}"
+      when: auth.json.data is defined
+    - name: Show bearer token
+      debug:
+        msg: "bearer_token is: {{ bearer_token }}"
+
